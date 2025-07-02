@@ -1196,59 +1196,7 @@ if (recogniser) {
     }
 
     // ---------- Initial KPI Charts (backend) ----------
-    const chartsContainer = document.getElementById('chartsContainer');
-    
-    function renderInitialKPICharts() {
-  const defaultCharts = [
-    {
-      title: 'Patient Age Distribution',
-      chartType: 'bar',
-      option: {
-        xAxis: { type: 'category', data: ['0-18', '19-30', '31-45', '46-60', '60+'] },
-        yAxis: { type: 'value' },
-        series: [{ data: [120, 200, 150, 80, 70], type: 'bar' }]
-      }
-    },
-    {
-      title: 'Test Type Frequency',
-      chartType: 'wordCloud',
-      option: {
-        series: [{
-          type: 'wordCloud',
-          shape: 'circle',
-          data: [
-            { name: 'Blood Test', value: 100 },
-            { name: 'X-Ray', value: 85 },
-            { name: 'MRI', value: 75 },
-            // ... more data ...
-          ]
-        }]
-      }
-    },
-    {
-      title: 'Regional Patient Distribution',
-      chartType: 'map',
-      option: {
-        tooltip: { trigger: 'item' },
-        visualMap: { min: 0, max: 500 },
-        series: [{
-          name: 'Patients',
-          type: 'map',
-          map: 'india',
-          data: [
-            { name: 'Delhi', value: 345 },
-            { name: 'Mumbai', value: 289 },
-            // ... more data ...
-          ]
-        }]
-      }
-    }
-  ];
-
-  defaultCharts.forEach(chart => {
-    chartRenderers.renderEChartCard(chart);
-  });
-    }
+   
     
     // ---------- Chart Card Renderer ----------
 function renderEChartCard({ id, title, option, chartType }) {
@@ -1458,7 +1406,6 @@ function renderEChartCard({ id, title, option, chartType }) {
       initDiagnosticMap();
       
       // Load initial KPI charts
-      renderInitialKPICharts();
       
       // Initialize empty state if no charts
       setTimeout(() => {
