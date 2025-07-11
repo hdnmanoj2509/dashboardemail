@@ -2707,7 +2707,7 @@ function unwrapResponseBucketPayload(raw) {
 }
 async function loadResponseTimeBucketChart() {
   try {
-    const res = await fetch("http://l192.168.68.109:5678/webhook/api/radar-urgency");
+    const res = await fetch("http://192.168.68.109:5678/webhook/api/radar-urgency");
     if (!res.ok) throw new Error(`API ${res.status}`);
     const raw = await res.json();
     const data = unwrapResponseBucketPayload(raw);  // [{bucket,value}]
