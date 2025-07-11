@@ -1047,15 +1047,14 @@ let ttsEnabled = JSON.parse(localStorage.getItem(ttsEnabledKey) ?? 'true');
 function speak(text) {
   if (!window.speechSynthesis || !ttsEnabled) return;
   const utter = new SpeechSynthesisUtterance(text);
-  utter.rate = 1;     // 0.1 – 10
-  utter.pitch = 1;    // 0 – 2
-  utter.lang  = 'en-US';
+  utter.rate = 1;     // 0.1 – 10
+  utter.pitch = 1;    // 0 – 2
+  utter.lang = 'en-US';
   speechSynthesis.speak(utter);
 }
 
-
 /* --- Greeting on first load ------------------------------------- */
-document.addEventListener('DOMContentLoaded',() => {
+document.addEventListener('DOMContentLoaded', () => {
   if (ttsEnabled) speak('Welcome to DeepDrishti. How can I help you analyse your Email data today?');
 });
 
@@ -1066,10 +1065,19 @@ voiceBtn.addEventListener('click', () => {
   ttsEnabled = !ttsEnabled;
   localStorage.setItem(ttsEnabledKey, JSON.stringify(ttsEnabled));
   updateVoiceIcon();
+
+  // Stop any ongoing speech if toggling off
+  if (!ttsEnabled && window.speechSynthesis) {
+    speechSynthesis.cancel();
+  }
 });
-function updateVoiceIcon(){
-  voiceBtn.innerHTML = ttsEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+
+function updateVoiceIcon() {
+  voiceBtn.innerHTML = ttsEnabled
+    ? '<i class="fas fa-volume-up"></i>'
+    : '<i class="fas fa-volume-mute"></i>';
 }
+
 /* --- Microphone button ------------------------------------------ */
 
 
