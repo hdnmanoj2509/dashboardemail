@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>DeepDrishti AI - Diagnostic Dashboard</title>
+  <title>DeepDrishti AI -Dashboard</title>
   <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css">
   <script src="https://cdn.jsdelivr.net/npm/chart.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.js"></script>
@@ -11,6 +11,8 @@
   <script src="https://cdn.jsdelivr.net/npm/echarts-wordcloud@2.1.0/dist/echarts-wordcloud.min.js"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts-liquidfill@3"></script>
   <script src="https://cdn.jsdelivr.net/npm/echarts-gl@2"></script>
+  <script src="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.js"></script>
+<link href="https://cdn.jsdelivr.net/npm/fullcalendar@6.1.15/index.global.min.css" rel="stylesheet">
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/leaflet@1.7.1/dist/leaflet.css">
   <style>
     * {
@@ -83,33 +85,34 @@
       top: 0;
       border-bottom: 3px solid var(--accent);
     }
+.logo {
+  /* was: display: flex; */
+  display: inline-flex;   /* ⬅️  now behaves like text, so multiple logos sit on one line */
+  align-items: center;
+  gap: 15px;
+}
 
-    .logo {
-      display: flex;
-      align-items: center;
-      gap: 15px;
-    }
+/* everything else stays the same */
+.logo h1 {
+  font-size: 1.9rem;
+  font-weight: 800;
+  letter-spacing: -0.5px;
+  text-shadow: 0 2px 4px rgba(0,0,0,0.2);
+}
 
-    .logo h1 {
-      font-size: 1.9rem;
-      font-weight: 800;
-      letter-spacing: -0.5px;
-      text-shadow: 0 2px 4px rgba(0,0,0,0.2);
-    }
+.logo i {
+  font-size: 1.8rem;
+  background: rgba(255, 255, 255, 0.25);
+  padding: 12px;
+  border-radius: 16px;
+  box-shadow: 0 4px 8px rgba(0,0,0,0.1);
+  transition: all 0.3s ease;
+}
 
-    .logo i {
-      font-size: 1.8rem;
-      background: rgba(255, 255, 255, 0.25);
-      padding: 12px;
-      border-radius: 16px;
-      box-shadow: 0 4px 8px rgba(0,0,0,0.1);
-      transition: all 0.3s ease;
-    }
-
-    .logo:hover i {
-      transform: rotate(10deg);
-      background: rgba(255, 255, 255, 0.35);
-    }
+.logo:hover i {
+  transform: rotate(10deg);
+  background: rgba(255, 255, 255, 0.35);
+}
 
     .header-controls {
       display: flex;
@@ -823,6 +826,150 @@
     }
     .header-btn.listening i { animation:pulse 1s infinite; }
 @keyframes pulse { 0%{transform:scale(1);} 50%{transform:scale(1.25);} 100%{transform:scale(1);} }
+/* =========  Escalation card (refined)  ========= */
+.chart-card .esc-details{
+  line-height: 1.6rem;          /* ↑ a bit more breathing room   */
+  font-size : 1.05rem;          /* ↑ base text size              */
+  padding   : 1rem .2rem .7rem; /* top / sides / bottom          */
+}
+
+.chart-card .esc-meta{
+  display: flex;
+  gap: 1.4rem;
+  flex-wrap: wrap;
+  margin-bottom: .6rem;
+  font-size: .95rem;
+}
+
+.chart-card .esc-chip{          /* severity pill */
+  padding: .15rem .7rem;
+  border-radius: 9999px;
+  font-size   : .82rem;
+  font-weight : 700;
+  letter-spacing: .02em;
+}
+
+.sev-low      { background:#e6f7f1; color:#177e55; }
+.sev-medium   { background:#fff6d6; color:#b27800; }
+.sev-high     { background:#ffe7dc; color:#cb4109; }
+.sev-critical { background:#fde4e7; color:#b5052c; }
+
+.chart-card .esc-email{
+  margin-top : .6rem;
+  font-size  : .9rem;
+  color: #374151;               /* gray-700 */
+  display: flex;
+  align-items: center;
+  gap: .45rem;
+}
+
+.chart-card .esc-email i{ font-size: .85rem; }
+
+.chart-card .esc-timestamp{
+  margin-top : .35rem;
+  font-size  : .8rem;
+  color: #6b7280;               /* gray-500 */
+}
+
+/* OPTIONAL – bump alert-list font so sidebar matches */
+.alert-item h3{ font-size: 1rem; }
+.alert-item p { font-size: .92rem; }
+
+/* ───── Biz-Dev Recommendation Sidebar (refined) ───── */
+
+/* Compact list tile */
+.rec-item{
+  cursor:pointer;
+  border-radius:14px;
+  padding:14px 16px;
+  margin-bottom:16px;
+  background:linear-gradient(110deg, rgba(114,9,183,0.08) 0%, rgba(114,9,183,0.03) 100%);
+  border-left:4px solid var(--accent);
+  box-shadow:0 4px 12px rgba(114,9,183,0.07);
+  transition:background .2s, transform .15s, box-shadow .2s;
+}
+.rec-item:hover{
+  background:rgba(114,9,183,0.12);
+  transform:translateY(-3px);
+  box-shadow:0 6px 18px rgba(114,9,183,0.16);
+}
+.rec-item h4{
+  font-size:1rem;
+  margin:0 0 .25rem;
+  display:flex;
+  align-items:center;
+  color:var(--accent);
+}
+.rec-item p{
+  font-size:.9rem;
+  margin:0;
+  color:var(--text);
+  white-space:nowrap;
+  overflow:hidden;
+  text-overflow:ellipsis;
+}
+
+/* Impact score badge */
+.rec-badge{
+  display:inline-block;
+  width:24px;
+  height:24px;
+  line-height:24px;
+  text-align:center;
+  margin-right:.45rem;
+  border-radius:50%;
+  background:var(--accent);
+  color:#fff;
+  font-size:.75rem;
+  font-weight:700;
+  box-shadow:0 2px 6px rgba(114,9,183,0.35);
+}
+
+/* Dashboard full card tweaks */
+.chart-card .rec-details{                 /* you already have this block – keep if present */
+  line-height:1.6rem;
+  font-size:1.05rem;
+  padding:1rem .2rem .7rem;
+}
+.chart-card .rec-meta{
+  display:flex;
+  gap:1rem;
+  flex-wrap:wrap;
+  margin-bottom:.6rem;
+  font-size:.95rem;
+}
+.chart-card .rec-chip{
+  padding:.15rem .7rem;
+  border-radius:9999px;
+  background:rgba(114,9,183,0.12);
+  color:var(--accent);
+  font-size:.82rem;
+  font-weight:700;
+}
+.fc .fc-event { font-size: 0.85rem; }
+/* ───── Calendar “XL” card ───── */
+.chart-card.calendar-xl        { grid-column: 1 / -1; }   /* full-width */
+.chart-card .fc                { font-size: 0.95rem; }
+.chart-card .fc-toolbar-title  { font-size: 1.4rem; font-weight: 700; }
+.chart-card .fc-daygrid-day    { height: 5.5rem; }        /* taller cells */
+.chart-card .fc-daygrid-day-frame:hover { box-shadow: inset 0 0 0 2px var(--primary); }
+
+.fc-theme-standard .fc-scrollgrid,
+.fc-theme-standard th,
+.fc-theme-standard td           { border-color: var(--border); }
+
+.fc .fc-event                    { border: none; border-radius: 8px; padding: 2px 6px; }
+.fc .fc-event:hover              { filter: brightness(1.05); cursor: pointer; }
+
+/* tag-based colours */
+.tag-heart        { background:#ff4d6d; color:#fff; }
+.tag-summer       { background:#ffba08; color:#522e02; }
+.tag-wellness     { background:#4cc9f0; color:#053251; }
+.tag-awareness    { background:#4361ee; color:#fff; }
+.tag-seasonal     { background:#3a86ff; color:#fff; }
+.tag-promo        { background:#7209b7; color:#fff; }
+/* add more as you like … */
+
 
   </style>
 </head>
@@ -830,8 +977,8 @@
   <header>
 
     <div class="logo">
-      <i class="fas fa-clinic-medical"></i>
-      <h1>DeepDrishti Diagnostic AI</h1>
+    <i class="fas fa-pills" ></i>
+      <h1>DeepDrishti  AI</h1>
     </div>
     <div class="header-controls">
       <button class="header-btn" id="themeToggle">
@@ -845,89 +992,87 @@
     </div>
   </header>
 
-  <div class="container">
-    <div class="recommendation-sidebar">
-      <h2><i class="fas fa-lightbulb"></i> Business Recommendations</h2>
-      <div class="recommendations">
-        <div class="recommendation" data-prompt="Expand to underserved areas">
-          <h3><i class="fas fa-map-marker-alt"></i> Expand to underserved areas</h3>
-          <div class="recommendation-badge">1</div>
-        </div>
-        <div class="recommendation" data-prompt="Enhance home collection service.">
-          <h3><i class="fas fa-home"></i> Enhance home collection service</h3>
-          <div class="recommendation-badge">2</div>
-        </div>
-        <div class="recommendation" data-prompt="Reduce report turnaround time.">
-          <h3><i class="fas fa-bolt"></i> Reduce report turnaround time</h3>
-          <div class="recommendation-badge">3</div>
-        </div>
-        <div class="recommendation" data-prompt="Introduce wellness packages">
-          <h3><i class="fas fa-hand-holding-usd"></i> Introduce wellness packages</h3>
-          <div class="recommendation-badge">4</div>
-        </div>
-        <div class="recommendation" data-prompt="Upgrade patient app">
-          <h3><i class="fas fa-mobile-alt"></i> Upgrade patient app</h3>
-          <div class="recommendation-badge">5</div>
-        </div>
-      </div>
-    </div>
+<div class="container"> 
+  <div class="recommendation-sidebar">
+  <h2><i class="fas fa-lightbulb"></i> Business Recommendations</h2>
+  <div class="recommendations" id="recList"></div>
+</div>
 
-    <div class="main-content">
-      <div class="input-card">
-        <h2>Diagnostic Data Insights</h2>
-        <p>Enter your diagnostic data analysis request below. Our AI will generate the optimal visualization.</p>
-        
-        <div class="input-area">
-          <input type="text" id="promptInput" placeholder="E.g. Show patient demographics by test type...">
-          <button id="generateBtn">
-            <i class="fas fa-bolt"></i> Generate
-          </button>
-          <button class="header-btn" id="micBtn" title="Speak">
-            <i class="fas fa-microphone"></i>
-          </button>
-        </div>
-      </div>
-      
-      <div class="dashboard-title">
-        <h2>Diagnostic Center Dashboard</h2>
-        <button class="clear-btn" id="clearDashboard">
-          <i class="fas fa-trash"></i> Clear Charts
-        </button>
-      </div>
-      
-      <div class="charts-container" id="chartsContainer">
-        <!-- Charts will be populated by JavaScript -->
-      </div>
+<div class="main-content">
+  <div class="input-card">
+    <div class="logo">
+    <i class="fas fa-envelope"></i>              <!-- envelope body -->
+      <h2>Email Analytics Insights</h2>
     </div>
     
-    <div class="alert-sidebar">
-      <h2><i class="fas fa-exclamation-triangle"></i> Escalations</h2>
-      <div class="alerts">
-        <div class="alert-item" data-prompt="Report on equipment downtime and its impact on patient wait times">
-          <h3><i class="fas fa-microscope"></i> Equipment Downtime</h3>
-          <p>MRI machine at Central-HQ has been down for 48 hours. Affecting 120+ patients.</p>
-          <div class="alert-badge">!</div>
-        </div>
-        <div class="alert-item" data-prompt="Analyze delayed report delivery rates for the past month">
-          <h3><i class="fas fa-clock"></i> Report Delays</h3>
-          <p>Report delivery SLA missed by 18% this week due to staffing shortages.</p>
-          <div class="alert-badge">!</div>
-        </div>
-        <div class="alert-item" data-prompt="Show inventory levels for critical testing supplies">
-          <h3><i class="fas fa-vial"></i> Supply Shortage</h3>
-          <p>Critical testing reagents running low. Stock levels at 15% for 3 key tests.</p>
-          <div class="alert-badge">!</div>
-        </div>
-        <div class="alert-item" data-prompt="Compare patient satisfaction scores across centers">
-          <h3><i class="fas fa-frown"></i> Patient Complaints</h3>
-          <p>Complaints increased 35% in West Zone. Analyze root causes.</p>
-          <div class="alert-badge">!</div>
-        </div>
-      </div>
+    <p>Enter your email data analysis request below. Our AI will generate the optimal visualization.</p>
+    
+    <div class="input-area">
+      <input type="text" id="promptInput" placeholder="E.g. Show inquiry count by category...">
+      <button id="generateBtn">
+        <i class="fas fa-bolt"></i> Generate
+      </button>
+      
     </div>
   </div>
+  
+  <div class="dashboard-title">
+    <div class="logo">
+    <i class="fas fa-chart-line" ></i>
+      <h2>Email Analytics Dashboard</h2>
+    </div>  
+    <button class="clear-btn" id="clearDashboard">
+      <i class="fas fa-trash"></i> Clear Charts
+    </button>
+  </div>
+  
+  <div class="charts-container" id="chartsContainer">
+    <!-- Charts will be populated by JavaScript -->
+  </div>
+</div>
 
+<div class="alert-sidebar">
+  <h2><i class="fas fa-exclamation-triangle"></i> Escalations</h2>
+  <div class="alerts" id="alertList"></div>
+</div>
+
+</div>
  <script>
+  /* Ask for mic permission the moment user presses the mic button */
+
+  /* ─────────  Speech‑Synthesis  ───────── */
+const ttsEnabledKey = 'dd_voice_on';
+let ttsEnabled = JSON.parse(localStorage.getItem(ttsEnabledKey) ?? 'true');
+
+function speak(text) {
+  if (!window.speechSynthesis || !ttsEnabled) return;
+  const utter = new SpeechSynthesisUtterance(text);
+  utter.rate = 1;     // 0.1 – 10
+  utter.pitch = 1;    // 0 – 2
+  utter.lang  = 'en-US';
+  speechSynthesis.speak(utter);
+}
+
+
+/* --- Greeting on first load ------------------------------------- */
+document.addEventListener('DOMContentLoaded',() => {
+  if (ttsEnabled) speak('Welcome to DeepDrishti. How can I help you analyse your Email data today?');
+});
+
+/* --- Voice toggle ------------------------------------------------ */
+const voiceBtn = document.getElementById('voiceToggle');
+updateVoiceIcon();
+voiceBtn.addEventListener('click', () => {
+  ttsEnabled = !ttsEnabled;
+  localStorage.setItem(ttsEnabledKey, JSON.stringify(ttsEnabled));
+  updateVoiceIcon();
+});
+function updateVoiceIcon(){
+  voiceBtn.innerHTML = ttsEnabled ? '<i class="fas fa-volume-up"></i>' : '<i class="fas fa-volume-mute"></i>';
+}
+/* --- Microphone button ------------------------------------------ */
+
+
 
     // ---------- Utility Functions ----------
     function getIconForType(type) {
@@ -979,140 +1124,212 @@
         window.diagnosticMap.invalidateSize();
       }
     });
-    document.querySelectorAll('.recommendation, .alert-item').forEach(item => {
-      item.addEventListener('click', function() {
-        const prompt = this.getAttribute('data-prompt');
-        promptInput.value = prompt;
-        
-        // Highlight the input to show it was populated
-        promptInput.focus();
-        promptInput.select();
-        
-        // Show visual feedback
-        this.style.transform = 'scale(0.98)';
-        this.style.boxShadow = '0 2px 8px rgba(0,0,0,0.1)';
-        setTimeout(() => {
-          this.style.transform = '';
-          this.style.boxShadow = '';
-        }, 300);
-      });
-    });
-    // ---------- Initialize Geomap ----------
-    function initDiagnosticMap() {
-      const mapContainer = document.createElement('div');
-      mapContainer.id = 'diagnosticMap';
-      
-      // Create map card
-      const mapCard = document.createElement('div');
-      mapCard.className = 'chart-card';
-      mapCard.innerHTML = `
-        <div class="chart-header">
-          <div class="chart-title">Diagnostic Centers & Patient Locations</div>
-          <div class="chart-actions">
-            <button class="chart-action" title="Refresh">
-              <i class="fas fa-sync-alt"></i>
-            </button>
-          </div>
-        </div>
-        <div class="chart-content">
-          <!-- Map will be rendered here -->
-        </div>
-        <div class="chart-footer">
-          <div class="map-legend">
-            <div class="legend-item">
-              <div class="legend-color legend-diagnostic"></div>
-              <span>Diagnostic Centers</span>
-            </div>
-            <div class="legend-item">
-              <div class="legend-color legend-patient"></div>
-              <span>Patient Locations</span>
-            </div>
-          </div>
-        </div>
-      `;
-      
-      // Add map to card
-      const chartContent = mapCard.querySelector('.chart-content');
-      chartContent.appendChild(mapContainer);
-      
-      // Add to dashboard
-      const chartsContainer = document.getElementById('chartsContainer');
-      chartsContainer.appendChild(mapCard);
-      
-      // Initialize Leaflet map
-      const diagnosticMap = L.map('diagnosticMap').setView([17.3850, 78.4867], 11); // Default to Hyderabad
-      
-      // Add tile layer
-      L.tileLayer('https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png', {
-        attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors'
-      }).addTo(diagnosticMap);
-      
-      // Store map reference
-      window.diagnosticMap = diagnosticMap;
-      
-      // Add refresh button functionality
-      const refreshBtn = mapCard.querySelector('.fa-sync-alt').parentElement;
-      refreshBtn.addEventListener('click', () => {
-        addRandomLocations(diagnosticMap);
-      });
-      
-      // Add random diagnostic centers and patients
-      addRandomLocations(diagnosticMap);
-      
-      return diagnosticMap;
-    }
-    
-    // Add random locations to the map
-    function addRandomLocations(map) {
-      // Clear existing markers
-      map.eachLayer(layer => {
-        if (layer instanceof L.Marker) {
-          map.removeLayer(layer);
-        }
-      });
-      
-      // Get current map bounds
-      const bounds = map.getBounds();
-      const northEast = bounds.getNorthEast();
-      const southWest = bounds.getSouthWest();
-      
-      // Generate random diagnostic centers (blue markers)
-      for (let i = 0; i < 15; i++) {
-        const lat = southWest.lat + Math.random() * (northEast.lat - southWest.lat);
-        const lng = southWest.lng + Math.random() * (northEast.lng - southWest.lng);
-        
-        const diagnosticIcon = L.divIcon({
-          className: 'diagnostic-marker',
-          html: `<div style="background: ${getComputedStyle(document.documentElement).getPropertyValue('--diagnostic')}; width: 16px; height: 16px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 8px rgba(0,0,0,0.3);"></div>`,
-          iconSize: [16, 16],
-          iconAnchor: [8, 8]
-        });
-        
-        L.marker([lat, lng], {icon: diagnosticIcon})
-          .bindPopup(`Diagnostic Center #${i+1}<br>24/7 operation<br>100+ tests available`)
-          .addTo(map);
-      }
-      
-      // Generate random patient locations (pink markers)
-      for (let i = 0; i < 120; i++) {
-        const lat = southWest.lat + Math.random() * (northEast.lat - southWest.lat);
-        const lng = southWest.lng + Math.random() * (northEast.lng - southWest.lng);
-        
-        const patientIcon = L.divIcon({
-          className: 'patient-marker',
-          html: `<div style="background: ${getComputedStyle(document.documentElement).getPropertyValue('--patient')}; width: 12px; height: 12px; border-radius: 50%; border: 2px solid white; box-shadow: 0 0 5px rgba(0,0,0,0.2);"></div>`,
-          iconSize: [12, 12],
-          iconAnchor: [6, 6]
-        });
-        
-        L.marker([lat, lng], {icon: patientIcon})
-          .bindPopup(`Patient Cluster #${i+1}`)
-          .addTo(map);
-      }
-    }
+   
+const ESCALATION_API = 'http://localhost:5678/webhook/escalations';
 
+/* icon + badge helpers */
+function iconForSeverity(sev){
+  return {low:'fa-info-circle',medium:'fa-exclamation-circle',
+          high:'fa-fire-alt',critical:'fa-skull-crossbones'}[sev]||'fa-tag';
+}
+function badgeText(sev){ return sev==='critical' ? '!!' : '!'; }
+
+/* build a single alert card */
+function renderAlertItem(esc){
+  const item = document.createElement('div');
+  item.className = 'alert-item';
+  item.innerHTML = `
+    <h3><i class="fas ${iconForSeverity(esc.severity)}"></i> ${esc.title}</h3>
+    <p>${esc.description}</p>
+    <div class="alert-badge">${badgeText(esc.severity)}</div>
+  `;
+  item.addEventListener('click', () => renderEscalationCard(esc));
+  return item;
+}
+
+
+/* fetch + render */
+async function loadEscalations(){
+  try{
+    const res  = await fetch(ESCALATION_API);
+    const data = await res.json();          // array returned by n8n
+
+    const list = document.getElementById('alertList');
+    list.innerHTML = '';                    // clear old items
+
+    if(data.length === 0){
+      list.innerHTML = '<p class="muted">No open escalations 🎉</p>';
+      return;
+    }
+    data.forEach(esc => list.appendChild(renderAlertItem(esc)));
+  }catch(err){
+    console.error('Escalation feed error:', err);
+  }
+}
+
+/* load once on page ready */
+document.addEventListener('DOMContentLoaded', loadEscalations);
+/* optional auto-refresh every 60 s */
+setInterval(loadEscalations, 60_000);
     // ---------- Initial KPI Charts (backend) ----------
    
+/* -----------------------------------------------------------
+   Escalation ➟ Dashboard card
+----------------------------------------------------------- */
+function renderEscalationCard(esc) {
+  /* avoid duplicate cards */
+  if (document.getElementById(esc._id)) return;
+
+  const card = document.createElement('div');
+  card.className = 'chart-card';
+  card.id = esc._id;
+
+  const niceSeverity = esc.severity.charAt(0).toUpperCase() + esc.severity.slice(1);
+
+  card.innerHTML = `
+    <div class="chart-header">
+      <div class="chart-title">
+        <i class="fas ${iconForSeverity(esc.severity)}"></i>
+        <span style="font-size:1.15rem; font-weight:600;">${esc.title}</span>
+      </div>
+      <div class="chart-actions">
+        <button class="chart-action delete" title="Remove card">
+          <i class="fas fa-trash"></i>
+        </button>
+      </div>
+    </div>
+
+    <div class="chart-content">
+      <div class="esc-details">
+
+        <!-- Meta row -->
+        <div class="esc-meta">
+          <span class="esc-chip sev-${esc.severity}" title="Severity"><strong>Severity:</strong>${niceSeverity}</span>
+          
+        </div>
+
+        <!-- Description -->
+        <p style="margin:.4rem 0 0;">${esc.description}</p>
+
+        <!-- Owner -->
+        <div class="esc-email">
+          <i class="fas fa-user-circle"></i>
+          <span>${esc.ownerEmail}</span>
+        </div>
+
+        <!-- Timestamp -->
+        <p class="esc-timestamp">
+          Detected&nbsp;${new Date(esc.detectedAt).toLocaleString()}
+        </p>
+      </div>
+    </div>
+  `;
+
+  card.querySelector('.delete').addEventListener('click', () => card.remove());
+  chartsContainer.prepend(card);
+}
+
+/* ==========  Biz-Dev Recommendations feed  ========== */
+const RECOMMEND_API = 'http://localhost:5678/webhook/dashboard-recommendations';
+
+/* Impact badge 1-10 */
+function impactBadge(score){
+  return `<span class="rec-badge">${score}</span>`;
+}
+
+/* Parse the n8n nested response */
+/* Parse the n8n nested response – handle both shapes */
+function extractRecs(apiData){
+  // Shape A (your sample): [ { response:{ body:[ { output:[ … ] } ] } } ]
+  if (Array.isArray(apiData) &&
+      apiData[0]?.response?.body?.[0]?.output){
+    return apiData[0].response.body[0].output;
+  }
+
+  // Shape B (sometimes webhook test mode): [ { output:[ … ] } ]
+  if (Array.isArray(apiData) && apiData[0]?.output){
+    return apiData[0].output;
+  }
+
+  console.error('Recommendation payload shape not recognised', apiData);
+  return [];
+}
+
+
+/* Sidebar preview tile */
+function renderRecListItem(rec){
+  const div = document.createElement('div');
+  div.className = 'rec-item';
+  div.innerHTML = `
+    <h4>${rec.title}</h4>
+  `;
+  div.addEventListener('click', () => renderRecCard(rec));
+  return div;
+}
+
+/* Full dashboard card */
+function renderRecCard(rec){
+  if(document.getElementById(`rec-${rec.id}`)) return;  // no dupes
+
+  const card = document.createElement('div');
+  card.className = 'chart-card';
+  card.id = `rec-${rec.id}`;
+
+  card.innerHTML = `
+    <div class="chart-header">
+      <div class="chart-title">
+        <i class="fas fa-lightbulb"></i>
+        <span style="font-size:1.15rem;font-weight:600;">${rec.title}</span>
+      </div>
+      <div class="chart-actions">
+        <button class="chart-action delete"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+
+    <div class="chart-content">
+      <div class="rec-details">
+        <div class="rec-meta">
+          <span class="rec-chip"><strong>StrategyArea:</strong>${rec.strategyArea}</span><br>
+          <span><strong>Impact:</strong> ${rec.impactScore}/10</span><br>
+        </div>
+
+        <p><strong>Recommendation:</strong>${rec.recommendation}</p>
+
+        <p class="rec-timestamp">
+          Generated&nbsp;${new Date(rec.generatedAt).toLocaleString()}
+        </p>
+      </div>
+    </div>
+  `;
+
+  card.querySelector('.delete').addEventListener('click', () => card.remove());
+  chartsContainer.prepend(card);
+}
+
+/* Fetch + populate sidebar */
+async function loadRecommendations(){
+  try{
+    const res  = await fetch(RECOMMEND_API);
+    const raw  = await res.json();
+    const recs = extractRecs(raw);
+
+    const list = document.getElementById('recList');
+    list.innerHTML = '';
+
+    if(!Array.isArray(recs) || recs.length === 0){
+      list.innerHTML = '<p class="muted">No recommendations today.</p>';
+      return;
+    }
+    recs.forEach(r => list.appendChild(renderRecListItem(r)));
+  }catch(err){
+    console.error('Recommendation feed error:', err);
+  }
+}
+
+/* Kick-off & hourly refresh */
+document.addEventListener('DOMContentLoaded', loadRecommendations);
+setInterval(loadRecommendations, 3_600_000);   // 1 h
+
     
     // ---------- Chart Card Renderer ----------
 function renderEChartCard({ id, title, option, chartType }) {
@@ -1149,7 +1366,113 @@ function renderEChartCard({ id, title, option, chartType }) {
   window.addEventListener('resize', () => chart.resize());
   return card;
 }
+/* -----------------------------------------------------------
+   CALENDAR  (XL full-row, theme-aware, colour-coded)
+----------------------------------------------------------- */
+function renderCalendarCard({ id, title, events }) {
+  const card = document.createElement('div');
+  card.className = 'chart-card calendar-xl';
+  card.id = id;
 
+  card.innerHTML = `
+    <div class="chart-header">
+      <div class="chart-title">
+        <i class="far fa-calendar-alt"></i> ${title}
+      </div>
+      <div class="chart-actions">
+        <button class="chart-action delete" title="Remove"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+    <div class="chart-content">
+      <div id="cal-${id}" style="width:100%;min-height:540px;"></div>
+    </div>
+  `;
+  card.querySelector('.delete').addEventListener('click', () => card.remove());
+  chartsContainer.prepend(card);
+
+  /* ---------- FullCalendar ---------- */
+  const calendar = new FullCalendar.Calendar(
+    document.getElementById(`cal-${id}`),
+    {
+      initialView: 'dayGridMonth',
+      headerToolbar: {
+        start: 'title',
+        center: '',
+        end: 'dayGridMonth,listWeek prev,next'
+      },
+      height: 'auto',
+      aspectRatio: 1.4,
+      events: events.map(e => {
+        /* first tag → css class */
+        const tagClass = (e.tags?.[0] || 'promo')
+                           .replace(/[^a-z0-9]/gi, '').toLowerCase();
+        return {
+          title: e.title,
+          start: e.start,
+          end  : e.end,
+          extendedProps: { campaignIdeas: e.campaignIdeas, metrics: e.metrics },
+          classNames: [`tag-${tagClass}`]
+        };
+      }),
+      eventDidMount(info) {
+        info.el.title = info.event.extendedProps.campaignIdeas;
+      },
+      eventClick(info) {
+        const { title, extendedProps } = info.event;
+        renderFunnelCard({
+          id: `funnel-${Math.random()*1e9|0}`,
+          title: `${title} – Conversion`,
+          metrics: extendedProps.metrics
+        });
+      }
+    }
+  );
+  calendar.render();
+  window.addEventListener('resize', () => calendar.updateSize());
+}
+
+/* -----------------------------------------------------------
+   FUNNEL  ➟  Mini funnel under a campaign
+----------------------------------------------------------- */
+function renderFunnelCard({ id, title, metrics }) {
+  const card = document.createElement('div');
+  card.className = 'chart-card';
+  card.id = id;
+
+  card.innerHTML = `
+    <div class="chart-header">
+      <div class="chart-title"><i class="fas fa-filter"></i> ${title}</div>
+      <div class="chart-actions">
+        <button class="chart-action delete"><i class="fas fa-trash"></i></button>
+      </div>
+    </div>
+    <div class="chart-content">
+      <div id="${id}-canvas" style="width:100%;height:300px;"></div>
+    </div>
+    <div class="chart-footer">
+      <div>Funnel</div>
+      <div>${new Date().toLocaleDateString()}</div>
+    </div>
+  `;
+  card.querySelector('.delete').addEventListener('click', () => card.remove());
+  chartsContainer.prepend(card);
+
+  const theme = body.classList.contains('dark-theme') ? 'dark' : undefined;
+  const chart = echarts.init(document.getElementById(`${id}-canvas`), theme);
+  chart.setOption({
+    tooltip: { trigger: 'item' },
+    series: [{
+      type: 'funnel',
+      label: { position: 'inside', formatter: '{b}: {c}' },
+      data: [
+        { name: 'Read',       value: metrics.read },
+        { name: 'Registered', value: metrics.registered },
+        { name: 'Attended',   value: metrics.attended }
+      ]
+    }]
+  });
+  window.addEventListener('resize', () => chart.resize());
+}
 
     // ---------- Clear Dashboard ----------
     document.getElementById('clearDashboard').addEventListener('click', () => {
@@ -1213,7 +1536,7 @@ function renderEChartCard({ id, title, option, chartType }) {
       const fullPrompt = prompt + (selectedChartType !== 'auto' ? ` using ${selectedChartType} chart` : '');
       
       try {
-        const res = await fetch('http://localhost:5678/webhook-test/43a833cb-54ac-47f9-9665-46324a1b7cee', {
+        const res = await fetch('http://localhost:5678/webhook/f6e3c9bc-ebb5-463b-a29c-b8254e655c91', {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify({ prompt: fullPrompt })
@@ -1242,15 +1565,27 @@ function renderEChartCard({ id, title, option, chartType }) {
           chartsContainer.prepend(card);
           card.querySelector('.delete').addEventListener('click', () => card.remove());
         }
+        else if (payload.type === 'calendar' && payload.events?.length) {
+          renderCalendarCard({
+          id: 'cal-' + (Math.random() * 1e9 | 0),
+          title: prompt.substring(0, 40),
+          events: payload.events
+        });
+      }
 
         /* ---------- IRRELEVANT ---------- */
         else if (payload.chartType === 'irrelevant') {
           const card = document.createElement('div');
           card.className = 'chart-card';
           card.innerHTML = `
-            <div class="chart-header"><div class="chart-title">Not Relevant</div></div>
+            <div class="chart-header"><div class="chart-title">Not Relevant</div>
+            <div class="chart-actions">
+              <button class="chart-action delete" title="Remove"><i class="fas fa-trash"></i></button>
+            </div>
+            </div>
             <div class="chart-content"><div class="chart-placeholder">
               This question doesn’t match any data.</div></div>`;
+          card.querySelector('.delete').addEventListener('click', () => card.remove());
           chartsContainer.prepend(card);
         }
 
@@ -1259,9 +1594,14 @@ function renderEChartCard({ id, title, option, chartType }) {
           const card = document.createElement('div');
           card.className = 'chart-card';
           card.innerHTML = `
-            <div class="chart-header"><div class="chart-title">No Data</div></div>
+            <div class="chart-header"><div class="chart-title">No Data</div>
+            <div class="chart-actions">
+              <button class="chart-action delete" title="Remove"><i class="fas fa-trash"></i></button>
+            </div>
+            </div>
             <div class="chart-content"><div class="chart-placeholder">
               No matching records were found.</div></div>`;
+          card.querySelector('.delete').addEventListener('click', () => card.remove());
           chartsContainer.prepend(card);
         }
 
@@ -1330,370 +1670,1386 @@ function renderEChartCard({ id, title, option, chartType }) {
         }
       }, 500);
     });
-    // 1 ─── Calendar Heat‑map  (Patients per Day)
-const calendarHeatmapOption = (() => {
-  const start = new Date('2025-01-01');
-  return {
-    tooltip: { position: 'top' },
-    visualMap: { min: 0, max: 260, orient: 'horizontal', left: 'center', bottom: 8 },
-    calendar: {
-      range: '2025', cellSize: [18, 18],
-      splitLine: { show: false }, itemStyle: { borderWidth: .5, borderColor: '#fff' }
-    },
+   /* Gracefully unwrap n8n webhook responses that may be nested */
+
+/* ============================================================
+   Word-Cloud of Keywords  ➟  Dominant topics
+============================================================ */
+
+function unwrapWordcloudPayload(raw) {
+  // ①  [{ response:{ body:[ … ] } }]
+  if (Array.isArray(raw) && raw[0]?.response?.body?.[0])
+    return raw[0].response.body;
+  // ②  Already flat array [{name,value},…]
+  if (Array.isArray(raw) && raw[0]?.name) return raw;
+  // ③  Wrapped in {data:[…]}
+  if (raw?.data) return raw.data;
+  throw new Error('Unexpected payload shape for word-cloud');
+}
+async function loadKeywordWordCloudCard() {
+  try {
+    const res = await fetch('http://localhost:5678/webhook/api/wordcloud');
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const raw   = await res.json();
+    const words = unwrapWordcloudPayload(raw);          // [{name,value},…]
+
+    if (!words.length) throw new Error('No keyword data');
+
+    /* ---------- OPTIONAL: re-scale values ----------
+       ECharts word-cloud already maps value → font-size between
+       sizeRange[0] and sizeRange[1].  But if your top word has
+       value 3 and the rest are 2,1… the visual spread is tiny.
+       To exaggerate the differences, re-map them: */
+    const max = Math.max(...words.map(w => w.value));
+    const min = Math.min(...words.map(w => w.value));
+
+    const scaledData = words.map(w => ({
+      name : w.name,
+      value: (w.value - min) / (max - min || 1) * 100 + 10  // 10→110
+    }));
+
+    /* ---------- ECharts option -------------------- */
+    const option = {
+      tooltip : { show: true },
+      series  : [{
+        type        : 'wordCloud',
+        shape       : 'circle',        // or 'cardioid' / 'diamond'
+        gridSize    : 6,
+        sizeRange   : [12, 64],        // 👈 font-size range (px)
+        rotationRange:[0, 0],          // keep horizontal
+        textStyle   : {
+          color: () => `hsl(${Math.random()*360|0},70%,55%)`,
+          emphasis : { shadowBlur: 4, shadowColor: '#555' }
+        },
+        data        : scaledData       // use scaled values
+      }]
+    };
+
+    renderEChartCard({
+      id       : 'wc-' + (Math.random()*1e9|0),
+      title    : 'Top Email Keywords',
+      chartType: 'wordCloud',
+      option
+    });
+
+    if (ttsEnabled) {
+      speak('Here is a word cloud showing your most frequent email keywords.');
+    }
+  } catch (err) {
+    console.error('Word-cloud error:', err);
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Keyword Cloud Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load keyword data (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+/* ============================================================
+   GORGEOUS Hour-of-Day × Weekday Heat-map
+============================================================ */
+
+/* Helper — tidy n8n wrapper <unchanged> */
+function unwrapHeatPayload(raw) {
+  if (Array.isArray(raw) && raw[0]?.response?.body?.[0]) return raw[0].response.body;
+  if (Array.isArray(raw) && raw[0]?.x !== undefined)     return raw;
+  throw new Error('Unexpected heat-map payload');
+}
+
+/* Harmonious blue-purple palette (0-→max) */
+const heatColors = [
+  '#eff6ff', '#bfdbfe', '#93c5fd', '#60a5fa',
+  '#3b82f6', '#2563eb', '#1d4ed8', '#1e40af',
+  '#1e3a8a'
+];
+
+/* Main loader */
+async function loadHourWeekdayHeatmapCard() {
+  try {
+    const res = await fetch('http://localhost:5678/webhook/api/heatmap');
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const raw   = await res.json();
+    const rows  = unwrapHeatPayload(raw);       // [{x,y,value},…]
+
+    /* Axes */
+    const hours    = Array.from({ length: 24 }, (_, i) => `${i}:00`);
+    const weekdays = ['Mon','Tue','Wed','Thu','Fri','Sat','Sun'];
+
+    /* [x, y, value] / y = weekday-1 for ECharts */
+    const seriesData = rows.map(r => [r.x, r.y - 1, r.value]);
+
+    /* For colour scaling */
+    const maxCnt = Math.max(...rows.map(r => r.value)) || 1;
+
+    /* Theme-aware (inherits your dark toggle) */
+    const isDarkTheme = body.classList.contains('dark-theme');
+    const bgColor     = isDarkTheme ? '#1f2937' : '#ffffff';
+
+    const option = {
+      backgroundColor: bgColor,
+      animationDuration: 1200,
+      animationEasing  : 'elasticOut',
+
+      tooltip: {
+        borderColor : '#64748b',
+        backgroundColor: isDarkTheme ? 'rgba(55,65,81,0.92)'
+                                     : 'rgba(255,255,255,0.9)',
+        textStyle   : { color: isDarkTheme ? '#f1f5f9' : '#0f172a' },
+        formatter   : p => {
+          const h = hours[p.data[0]];
+          const d = weekdays[p.data[1]];
+          return `<strong>${d} ${h}</strong><br/>${p.data[2]} e-mails`;
+        }
+      },
+
+      grid: {
+        top   : 70,
+        left  : 110,
+        right : 30,
+        bottom: 40
+      },
+
+      xAxis: {
+        type: 'category',
+        data: hours,
+        boundaryGap: false,
+        axisTick: { show: false },
+        axisLabel: { color: isDarkTheme ? '#cbd5e1' : '#334155' },
+        splitArea: { show: true, areaStyle: { color: 'transparent' } }
+      },
+
+      yAxis: {
+        type: 'category',
+        data: weekdays,
+        axisTick: { show: false },
+        axisLabel: { color: isDarkTheme ? '#cbd5e1' : '#334155' },
+        splitArea: { show: true, areaStyle: { color: 'transparent' } }
+      },
+
+      visualMap: {
+        show: false,          // we’ll add a prettier legend manually
+        min : 0,
+        max : maxCnt,
+        inRange: { color: heatColors }
+      },
+
+      series: [{
+        type : 'heatmap',
+        name : 'Volume',
+        data : seriesData,
+        label: { show: false },
+        emphasis: {
+          itemStyle: {
+            shadowBlur: 10,
+            shadowColor: 'rgba(0,0,0,0.35)',
+            borderColor: '#fbbf24',
+            borderWidth: 2
+          }
+        }
+      }],
+
+      /* Pretty side legend (mini bar) */
+      visualMapPiecewise: {
+        orient : 'horizontal',
+        left   : 'center',
+        bottom : 12,
+        min    : 0,
+        max    : maxCnt,
+        splitNumber: heatColors.length,
+        color  : heatColors,
+        textStyle: { color: isDarkTheme ? '#cbd5e1' : '#475569' }
+      },
+
+      
+    };
+
+    renderEChartCard({
+      id       : 'heat-' + (Math.random()*1e9|0),
+      title    : 'Email Arrivals over weekdays',
+      chartType: 'heatmap',
+      option
+    });
+
+    if (ttsEnabled) {
+      speak('A colourful heat map of email arrivals by hour and weekday is now on your dashboard.');
+    }
+
+  } catch (err) {
+    console.error('Heat-map error:', err);
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Heat-map Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load hour-weekday data (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+
+
+
+/* ============================================================
+   LIVE SLA-Compliance Gauge  (auto-refresh every 2 min)
+============================================================ */
+
+/* unwrap helper — handles all n8n shapes */
+function unwrapGaugePayload(raw) {
+  if (Array.isArray(raw) && raw[0]?.response?.body?.[0])
+    return raw[0].response.body[0];          // [{response:{body:[{…}]}}]
+  if (Array.isArray(raw) && raw[0]?.label)
+    return raw[0];                            // [{label,value}]
+  if (raw?.label)
+    return raw;                               // {label,value}
+  throw new Error('Unexpected gauge payload shape');
+}
+
+/* core fetch-and-render */
+async function fetchAndRenderSLAGauge(firstRun = false, chartRef = null) {
+  const res  = await fetch('http://localhost:5678/webhook/api/gauge');      // 👈 path in Webhook node
+  if (!res.ok) throw new Error(`API ${res.status}`);
+
+  const payload = unwrapGaugePayload(await res.json());
+  const pct     = payload.value ?? 0;
+
+  const option = {
+    tooltip: { formatter: `{b}<br/>{c}%` },
     series: [{
-      type: 'heatmap', coordinateSystem: 'calendar',
-      data: Array.from({ length: 365 }, (_, i) => {
-        const d = new Date(start); d.setDate(d.getDate() + i);
-        const monthFactor = [0,1].includes(d.getUTCMonth()) ? 0.9 : [5,6,7].includes(d.getUTCMonth()) ? 1.15 : 1;
-        const base = [0,6].includes(d.getUTCDay()) ? 60 : 140;
-        return [d.toISOString().slice(0,10), Math.round((base + Math.random()*60)*monthFactor)];
-      })
+      type : 'gauge',
+      min  : 0,
+      max  : 100,
+      axisLine : { lineStyle: { width: 14 } },
+      pointer  : { width: 4 },
+      detail   : { formatter: '{value}%', fontSize: 24 },
+      data     : [ { value: pct, name: payload.label } ]
     }]
   };
-})();
 
-/* ---------- 2 ─ Word Cloud (Top Requested Tests) ---------- */
-const wordCloudOption = {
-  tooltip: {},
-  series: [{
-    type: 'wordCloud', shape: 'circle', gridSize: 8,
-    sizeRange: [12, 60], rotationRange: [-30, 30],
-    textStyle: { fontFamily: 'sans-serif' },
-    data: [
-      { name:'Complete Blood Count',value:270 },{ name:'Lipid Profile',value:225 },
-      { name:'Thyroid Panel',value:200 },{ name:'HbA1c',value:190 },
-      { name:'MRI Brain',value:170 },{ name:'X‑Ray Chest',value:160 },
-      { name:'CT Abdomen',value:145 },{ name:'Vitamin‑D',value:140 },
-      { name:'COVID‑19 RTPCR',value:130 },{ name:'Renal Panel',value:125 },
-      { name:'Ultrasound Pelvis',value:115 },{ name:'D‑Dimer',value:110 },
-      { name:'Cardiac Troponin',value:105 },{ name:'Pap Smear',value:100 },
-      { name:'PSA',value:95 },{ name:'Electrolyte Panel',value:90 },
-      { name:'OGTT',value:88 },{ name:'Liver Function Panel',value:85 },
-      { name:'Coagulation Profile',value:83 },{ name:'Ferritin',value:80 },
-      { name:'Beta‑hCG',value:78 },{ name:'Stool Occult Blood',value:75 }
-    ]
-  }]
-};
+  /* first run → build card; subsequent calls just update the chart */
+  if (firstRun) {
+    const card = renderEChartCard({
+      id       : 'gauge-' + (Math.random()*1e9|0),
+      title    : 'Costomer Satisfaction',
+      chartType: 'gauge',
+      option
+    });
+    return echarts.getInstanceByDom(card.querySelector('[id$="-canvas"]'));
+  } else if (chartRef) {
+    chartRef.setOption(option, true);
+    return chartRef;
+  }
+}
 
-const avgTATRoseOption = (() => {
-  /* baseline averages in minutes */
-  const tests = [
-    { name:'Complete Blood Count', base:15 },
-    { name:'MRI Brain',            base:55 },
-    { name:'CT Abdomen',           base:42 },
-    { name:'X‑Ray Chest',          base:10 },
-    { name:'Ultrasound Pelvis',    base:20 },
-    { name:'Lipid Profile',        base:15 },
-    { name:'Thyroid Panel',        base:18 },
-    { name:'HbA1c',                base:16 },
-    { name:'D‑Dimer',              base:24 },
-    { name:'Vitamin‑D',            base:18 }
-  ];
+/* loader that sets up auto-refresh every 120 s */
+async function loadSLAGaugeCard() {
+  try {
+    let gaugeChart = await fetchAndRenderSLAGauge(true);     // initial render
+    if (ttsEnabled) speak('Current SLA compliance loaded.');
 
-  /* “time‑of‑day” factor: evenings a bit slower, early AM faster */
-  const hour = new Date().getHours();          // 0‑23
-  const todFactor = hour < 8  ? 0.92 :
-                    hour < 16 ? 1.00 :          // peak operating hours
-                                 1.12;          // after‑hours batching
+    /* refresh every two minutes */
+    setInterval(async () => {
+      try {
+        gaugeChart = await fetchAndRenderSLAGauge(false, gaugeChart);
+      } catch (err) {
+        console.error('Gauge refresh error:', err);
+      }
+    }, 120_000);
 
-  /* build data with ±8 % noise */
-  const data = tests.map(t => {
-    const noise = 0.92 + Math.random()*0.16;   // 92‑108 %
+  } catch (err) {
+    console.error('Gauge load error:', err);
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">SLA Gauge Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load SLA data (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+
+
+/* ============================================================
+   BEAUTIFIED Sunburst  ➟  Category ⟶ Sentiment
+============================================================ */
+
+/*  Unwrap helper (unchanged) */
+function unwrapSunburstPayload(raw) {
+  if (Array.isArray(raw) && raw[0]?.response?.body?.[0]) return raw[0].response.body;
+  if (Array.isArray(raw) && raw[0]?.name)                return raw;
+  throw new Error('Unexpected sunburst payload shape');
+}
+
+/*  Palette – pleasant pastels */
+const basePalette = [
+  '#6baed6', '#fd8d3c', '#74c476', '#c49cde',
+  '#fdd0a2', '#9e9ac8', '#fdae6b', '#a1d99b'
+];
+
+/*  Create lighter shades for children */
+function shade(hex, pct = 0.25) {
+  const num = parseInt(hex.slice(1), 16);
+  const r   = (num >> 16) + Math.round( pct * (255 - (num >> 16)) );
+  const g   = (num >>  8 & 255) + Math.round( pct * (255 - (num >> 8 & 255)) );
+  const b   = (num & 255) + Math.round( pct * (255 - (num & 255)) );
+  return '#' + (1 << 24 | r << 16 | g << 8 | b).toString(16).slice(1);
+}
+
+/*  Recursively apply colours & radial gradient */
+function decorateSunburst(data) {
+  return data.map((cat, idx) => {
+    const base = basePalette[idx % basePalette.length];
+    const decoratedChildren = (cat.children || []).map(ch => ({
+      ...ch,
+      itemStyle: {
+        color: {
+          type : 'radial',
+          x: 0.5, y: 0.5, r: 0.8,
+          colorStops: [
+            { offset: 0, color: shade(base, 0.5) },
+            { offset: 1, color: shade(base, 0.15) }
+          ]
+        }
+      }
+    }));
     return {
-      name: t.name,
-      value: +(t.base * todFactor * noise).toFixed(1)
+      ...cat,
+      itemStyle: {
+        color: {
+          type : 'radial',
+          x: 0.5, y: 0.5, r: 0.8,
+          colorStops: [
+            { offset: 0, color: base },
+            { offset: 1, color: shade(base, -0.25) }
+          ]
+        }
+      },
+      children: decoratedChildren
     };
   });
+}
 
-  /* colour palette: long exams = deeper hue */
-  const maxVal = Math.max(...data.map(d=>d.value));
-  const minVal = Math.min(...data.map(d=>d.value));
-  const lerp = (a,b,x)=>a+(b-a)*x;             // linear interpolation
+async function loadCategorySentimentSunburstCard() {
+  try {
+    const res  = await fetch('http://localhost:5678/webhook/api/sunburst');
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const raw   = await res.json();
+    const data  = decorateSunburst(unwrapSunburstPayload(raw));
 
-  data.forEach(d=>{
-    const pct = (d.value-minVal)/(maxVal-minVal || 1);
-    const hue = lerp(200,340,pct);             // blue → magenta
-    d.itemStyle = {
-      color: {
-        type:'radial',
-        x:0.5,y:0.5,r:0.85,
-        colorStops:[
-          { offset:0, color:`hsla(${hue},100%,85%,0.2)` },
-          { offset:1, color:`hsl(${hue},85%,55%)` }
-        ]
+    const option = {
+      animationDuration: 1200,
+      animationEasing  : 'elasticOut',
+      tooltip : {
+        backgroundColor: 'rgba(50,50,50,0.85)',
+        borderColor    : '#333',
+        textStyle      : { color: '#fff' },
+        formatter      : p => `<strong>${p.data.name}</strong><br/>${p.data.value} e-mails`
+      },
+      legend : {
+        orient : 'vertical',
+        left   : 0,
+        top    : 'center',
+        textStyle: { fontSize: 12 },
+        data   : data.map(d => d.name),
+        selectedMode: 'multiple'
+      },
+      series : [{
+        type       : 'sunburst',
+        radius     : ['18%', '88%'],
+        sort       : null,
+        label      : {
+          rotate   : 'radial',
+          fontSize : 10,
+          formatter: p => (p.depth === 1 ? `{a|${p.name}}` : p.name),
+          rich     : { a:{ fontSize:12, fontWeight:600 } }
+        },
+        emphasis   : {
+          focus: 'ancestor',
+          scale: true
+        },
+        itemStyle  : { borderWidth: 1.5, borderColor: '#fff' },
+        data
+      }]
+    };
+
+    renderEChartCard({
+      id       : 'sun-' + (Math.random()*1e9|0),
+      title    : 'Category ➜ Sentiment Email distribution',
+      chartType: 'sunburst',
+      option
+    });
+
+    if (ttsEnabled) speak('Enhanced sunburst chart added to the dashboard.');
+  } catch (err) {
+    console.error('Sunburst error:', err);
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Sunburst Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load category-sentiment data (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+
+
+
+
+
+/* ============================================================
+   CATEGORY  ➟  Rose-Bar (TOP-10)
+============================================================ */
+
+/* unwrap helper  – same pattern */
+function unwrapCategoryRose(raw){
+  if(Array.isArray(raw) && raw[0]?.response?.body?.[0]) return raw[0].response.body;
+  if(Array.isArray(raw) && raw[0]?.name)                return raw;
+  throw new Error('Unexpected category-rose payload');
+}
+
+/* palette – 10 harmonious tones */
+const catColors = [
+  '#fecaca','#fcd34d','#bbf7d0','#bfdbfe','#ddd6fe',
+  '#fed7aa','#fdba74','#c4b5fd','#a5f3fc','#fda4af'
+];
+
+async function loadCategoryRoseBarCard(){
+  try{
+    const res  = await fetch('http://localhost:5678/webhook/api/rose_bar');   // 👈 endpoint path
+    if(!res.ok) throw new Error(`API ${res.status}`);
+    const data = unwrapCategoryRose(await res.json());        // [{name,value}]
+
+    const max  = Math.max(...data.map(d=>d.value));
+
+    const seriesData = data.map((d,i)=>({
+      ...d,
+      itemStyle:{
+        color      : catColors[i % catColors.length],
+        shadowBlur : 6,
+        shadowColor: 'rgba(0,0,0,0.18)'
+      }
+    }));
+
+    const option = {
+      animationDuration: 1000,
+      animationEasing  : 'elasticOut',
+      tooltip: {
+        formatter: p => `<b>${p.data.name}</b><br/>${p.data.value} e-mails`
+      },
+      angleAxis : {
+        type       : 'category',
+        data       : data.map(d=>d.name),
+        startAngle : 90,
+        axisLabel  : { fontSize: 11 }
+      },
+      radiusAxis: { max, axisLabel:{ show:false } },
+      polar     : {},
+      series    : [{
+        type       : 'bar',
+        coordinateSystem:'polar',
+        roundCap   : true,
+        barWidth   : 26,
+        data       : seriesData,
+        emphasis   : { itemStyle:{ opacity:0.9 } }
+      }],
+      legend    : { show:false }
+    };
+
+    renderEChartCard({
+      id       : 'roseCat-' + (Math.random()*1e9|0),
+      title    : 'Email Volume By category',
+      chartType: 'polarRose',
+      option
+    });
+
+    if(ttsEnabled) speak('Category rose chart added to your dashboard.');
+  }catch(err){
+    console.error('Category rose error:', err);
+    const card=document.createElement('div');
+    card.className='chart-card';
+    card.innerHTML=`<div class="chart-header"><div class="chart-title">
+      Rose Chart Error</div></div><div class="chart-content">
+      <div class="chart-placeholder">Could not load category data (${err.message})</div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+
+
+
+/* ============================================================
+   Drop-off Funnel  (Open ➜ Assigned ➜ Responded ➜ Resolved)
+============================================================ */
+
+/* unwrap helper */
+function unwrapFunnel(raw){
+  if(Array.isArray(raw) && raw[0]?.response?.body?.[0]) return raw[0].response.body;
+  if(Array.isArray(raw) && raw[0]?.name)                return raw;
+  throw 'Funnel payload shape unexpected';
+}
+
+/* pastel–to–deep gradient colours */
+const funnelCols = ['#fde68a','#fcd34d','#fb923c','#f87171'];
+
+async function loadTicketFunnelCard(){
+  try{
+    const r = await fetch('http://localhost:5678/webhook/api/funnel');   // 👈 your path
+    if(!r.ok) throw Error(r.status);
+    const data = unwrapFunnel(await r.json());             // [{name,value}]
+
+    /* decorate with colour + shadow */
+    const seriesData = data.map((d,i)=>({
+      ...d,
+      itemStyle:{
+        color       : funnelCols[i],
+        shadowBlur  : 6,
+        shadowColor : 'rgba(0,0,0,0.15)'
+      },
+      label:{
+        show     : true,
+        position : 'inside',
+        formatter: `{b}\n{c}`,
+        color    : '#1e293b',
+        fontWeight: 600
+      }
+    }));
+
+    const option = {
+      animationDuration: 1000,
+      tooltip: { formatter:'{b}: {c}' },
+      series : [{
+        type     : 'funnel',
+        gap      : 4,
+        minSize  : '30%',
+        maxSize  : '92%',
+        sort     : 'descending',      // keep Open widest
+        label    : { overflow:'break' },
+        data     : seriesData
+      }],
+      toolbox : {
+        feature:{ saveAsImage:{} }
       }
     };
-  });
 
-  return {
-    tooltip:{ formatter:p=>`${p.name}<br/>${p.value} min` },
-    legend:{ left:'center', top:8, orient:'horizontal', type:'scroll' },
-    series:[{
-      name:'Avg TAT',
-      type:'pie',
-      radius:['25%','80%'],
-      roseType:'radius',
-      data,
-      label:{ formatter:'{c} min', color:'#333' },
-      emphasis:{ scale:true, scaleSize:12 }
-    }]
-  };
-})();
+    renderEChartCard({
+      id:'fun-'+(Math.random()*1e9|0),
+      title:'Email status Flow',
+      chartType:'funnel',
+      option
+    });
+
+    if(ttsEnabled) speak('Funnel chart added—see where tickets stall.');
+  }catch(err){
+    console.error('Funnel error', err);
+    const card=document.createElement('div');
+    card.className='chart-card';
+    card.innerHTML=`<div class="chart-header"><div class="chart-title">
+      Funnel Error</div></div><div class="chart-content">
+      <div class="chart-placeholder">Cannot load funnel (${err.message})</div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+
+async function loadProductBarRaceCard() {
+  try {
+    // Static data simulating product popularity
+    const words = [
+      // 🔝 High-visibility drugs (2–3)
+      { name: 'Atorvastatin', value: 98 },
+      { name: 'Metformin', value: 85 },
+      { name: 'Amlodipine', value: 80 },
+
+      // 🔁 Mid-level drugs (4–5)
+      { name: 'Losartan', value: 55 },
+      { name: 'Omeprazole', value: 52 },
+      { name: 'Simvastatin', value: 48 },
+      { name: 'Levothyroxine', value: 45 },
+
+      // 🐜 Lower-viewed drugs (6–7)
+      { name: 'Gabapentin', value: 22 },
+      { name: 'Hydrochlorothiazide', value: 18 },
+      { name: 'Sertraline', value: 16 },
+      { name: 'Alprazolam', value: 12 },
+      { name: 'Pantoprazole', value: 9 }
+    ];
+
+    const max = Math.max(...words.map(w => w.value));
+    const min = Math.min(...words.map(w => w.value));
+
+    const scaledData = words.map(w => ({
+      name : w.name,
+      value: (w.value - min) / (max - min || 1) * 100 + 10  // Scale to 10–110
+    }));
+
+    const option = {
+      tooltip : { show: true },
+      series  : [{
+        type         : 'wordCloud',
+        shape        : 'circle',
+        gridSize     : 6,
+        sizeRange    : [12, 64],
+        rotationRange: [0, 0],
+        textStyle    : {
+          color: () => `hsl(${Math.random()*360|0},70%,55%)`,
+          emphasis : { shadowBlur: 4, shadowColor: '#555' }
+        },
+        data: scaledData
+      }]
+    };
+
+    renderEChartCard({
+      id       : 'wc-' + (Math.random() * 1e9 | 0),
+      title    : 'Pharma Product Mentions',
+      chartType: 'wordCloud',
+      option
+    });
+
+    if (ttsEnabled) {
+      speak('Here is a word cloud of frequently mentioned pharmaceutical products.');
+    }
+
+  } catch (err) {
+    console.error('Word-cloud error:', err);
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Keyword Cloud Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load keyword data (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+
+function unwrapLongChainDurationPayload(raw) {
+  // ① Wrapped: [{ response: { body: [ … ] } }]
+  if (Array.isArray(raw) && raw[0]?.response?.body?.[0])
+    return raw[0].response.body;
+
+  // ② Flat array already: [{ chain_id, startDate, endDate, duration_days }]
+  if (Array.isArray(raw) && raw[0]?.chain_id && raw[0]?.duration_days !== undefined)
+    return raw;
+
+  // ③ API returns { data: [...] }
+  if (raw?.data && Array.isArray(raw.data))
+    return raw.data;
+
+  throw new Error('Unexpected payload shape for long-chain-duration chart');
+}
+async function loadLongChainDurationChart() {
+  try {
+    const res = await fetch('http://localhost:5678/webhook/api/area');
+    if (!res.ok) throw new Error(`API error ${res.status}`);
+    const raw = await res.json();
+    const data = unwrapLongChainDurationPayload(raw);
+
+    if (!data.length) throw new Error("No long chains found");
+
+    const seriesData = data.map(d => ({
+      value: [d.startDate, d.duration_days],
+      chain_id: d.chain_id
+    }));
+
+    const option = {
+      title: {
+        text: 'Long Email Chains: Response Time (Days)',
+        left: 'center'
+      },
+      tooltip: {
+        trigger: 'axis',
+        formatter: params => {
+          const p = params[0];
+          return `📧 Chain ID: <b>${p.data.chain_id}</b><br/>
+                  🕓 Start: ${new Date(p.data.value[0]).toLocaleDateString()}<br/>
+                  ⏱ Duration: ${p.data.value[1].toFixed(1)} days`;
+        }
+      },
+      xAxis: {
+        type: 'time',
+        name: 'Start Date',
+        axisLabel: { rotate: 45 }
+      },
+      yAxis: {
+        type: 'value',
+        name: 'Duration (Days)'
+      },
+      series: [{
+        name: 'Response Duration',
+        type: 'line',
+        symbol: 'circle',
+        symbolSize: 8,
+        lineStyle: { width: 2 },
+        itemStyle: { color: '#3b82f6' },
+        data: seriesData,
+        emphasis: {
+          label: {
+            show: true,
+            formatter: d => `${d.data.value[1].toFixed(1)} days`
+          }
+        }
+      }]
+    };
+
+    renderEChartCard({
+      id: 'chain-duration-' + (Math.random()*1e9|0),
+      title: 'Email Chain Response Time (Only Long Chains)',
+      chartType: 'line',
+      option
+    });
+
+    if (ttsEnabled) {
+      speak('Email chain duration chart loaded.');
+    }
+
+  } catch (err) {
+    console.error('Chain duration error:', err);
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Chain Duration Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load email chain duration (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+/* ============================================================
+   Horizontal BAr – Product  x Sentiment
+============================================================ */
+function unwrapProductSentimentPayload(raw) {
+  if (Array.isArray(raw) && raw[0]?.product && raw[0]?.sentiments) return raw;
+  if (raw?.data) return raw.data;
+  if (Array.isArray(raw) && raw[0]?.response?.body?.[0]) return raw[0].response.body;
+  throw new Error("Unexpected payload shape for product sentiment");
+}
+async function loadProductSentimentBarChart() {
+  try {
+    const res = await fetch('http://localhost:5678/webhook/api/horizontal_bar');
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const raw = await res.json();
+    const data = unwrapProductSentimentPayload(raw);  // [{product, total, sentiments:[{sentiment,count},…]}]
+
+    const sentiments = ['Positive', 'Neutral', 'Negative'];
+    const colors = {
+      Positive: '#4ade80',  // green
+      Neutral: '#facc15',   // yellow
+      Negative: '#f87171'   // red
+    };
+
+    const categories = data.map(d => d.product);
+    const series = sentiments.map(sent => ({
+      name: sent,
+      type: 'bar',
+      stack: 'total',
+      label: { show: true, position: 'insideRight', fontSize: 11 },
+      itemStyle: { color: colors[sent] },
+      data: data.map(d => {
+        const match = d.sentiments.find(s => s.sentiment === sent);
+        return match ? match.count : 0;
+      })
+    }));
+
+    const option = {
+      
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' }
+      },
+      legend: {
+        top: 24,
+        data: sentiments,
+        textStyle: { fontSize: 12 }
+      },
+      grid: {
+        left: '4%',
+        right: '4%',
+        bottom: '4%',
+        containLabel: true
+      },
+      xAxis: {
+        type: 'value',
+        name: 'Email Count',
+        axisLabel: { fontSize: 11 }
+      },
+      yAxis: {
+        type: 'category',
+        data: categories,
+        axisLabel: { fontSize: 12 }
+      },
+      series
+    };
+
+    renderEChartCard({
+      id: 'sent-prod-' + (Math.random()*1e9|0),
+      title: 'Product-wise Email Sentiment',
+      chartType: 'bar',
+      option
+    });
+
+    if (ttsEnabled) speak('Sentiment by product chart is now available.');
+  } catch (err) {
+    console.error('Product × Sentiment Chart Error:', err);
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Sentiment Chart Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load product sentiment chart (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
 
 
-/* ---------- 4 ─ Heat‑map (Centre × Machine Utilisation %) ---------- */
-const utilisationHeatmapOption = (() => {
-  const centres  = ['Central‑HQ','West Zone','East Zone','South Zone','North Zone'];
-  const machines = ['MRI','CT','X‑Ray','Ultrasound','Blood Analyser'];
-  const data = [];
-  centres.forEach((c,i) => machines.forEach((m,j) => data.push([j,i,+(55+Math.random()*35).toFixed(1)])));
-  return {
-    tooltip:{ formatter: d=>`${machines[d.value[0]]}<br/>${centres[d.value[1]]}: ${d.value[2]} %` },
-    xAxis:{ type:'category', data:machines, splitArea:{ show:true } },
-    yAxis:{ type:'category', data:centres, splitArea:{ show:true } },
-    visualMap:{ min:50, max:100, calculable:true, orient:'vertical', left:'right', top:'center' },
-    series:[{ type:'heatmap', data, label:{ show:true }, emphasis:{ itemStyle:{ shadowBlur:10 } } }]
-  };
-})();
+// /* ============================================================
+//    Multi Line – Product  x complaint
+// ============================================================ */
+// function unwrapComplaintTrendPayload(raw) {
+//   if (Array.isArray(raw) && raw[0]?.product && raw[0]?.values) return raw;
+//   if (raw?.data) return raw.data;
+//   if (Array.isArray(raw) && raw[0]?.response?.body?.[0]) return raw[0].response.body;
+//   throw new Error("Unexpected complaint trend payload");
+// }
+// async function loadComplaintTrendChart() {
+//   try {
+//     const res = await fetch("http://localhost:5678/webhook/api/water_fall");
+//     if (!res.ok) throw new Error(`API ${res.status}`);
+//     const raw = await res.json();
+//     const data = unwrapComplaintTrendPayload(raw);
 
-/* ---------- 5 ─ Sunburst (Machinery Status) ---------- */
-const machineStatusSunburstOption = (() => {
-  const centres = ['Central‑HQ','West Zone','East Zone','South Zone','North Zone'];
-  const statusColours={ Operational:'#4caf50', Maintenance:'#ff9800', Down:'#f44336' };
-  const root = {
-    name:'All Centres',
-    children:centres.map(c=>({
-      name:c,
-      children:[
-        { name:'Operational',value:Math.floor(25+Math.random()*8),itemStyle:{color:statusColours.Operational} },
-        { name:'Maintenance',value:Math.floor(3+Math.random()*3),itemStyle:{color:statusColours.Maintenance} },
-        { name:'Down',       value:Math.floor(1+Math.random()*2),itemStyle:{color:statusColours.Down} }
+//     // Get sorted unique months
+//     const allMonths = Array.from(new Set(
+//       data.flatMap(d => d.values.map(v => v.month))
+//     )).sort();
+
+//     // Build series with color
+//     const palette = ['#ef4444','#f59e0b','#10b981','#6366f1','#ec4899','#22d3ee','#a855f7','#84cc16','#f43f5e','#14b8a6'];
+//     const series = data.map((product, i) => {
+//       const countMap = Object.fromEntries(product.values.map(v => [v.month, v.count]));
+//       return {
+//         name: product.product,
+//         type: 'line',
+//         symbol: 'circle',
+//         symbolSize: 6,
+//         lineStyle: { width: 3 },
+//         itemStyle: { color: palette[i % palette.length] },
+//         emphasis: { focus: 'series' },
+//         data: allMonths.map(m => countMap[m] || 0)
+//       };
+//     });
+
+//     const option = {
+      
+//       tooltip: {
+//         trigger: 'axis',
+//         axisPointer: { type: 'line' },
+//         formatter: params => {
+//           const date = params[0].axisValue;
+//           const lines = params.map(p =>
+//             `<div><span style="color:${p.color}">●</span> <b>${p.seriesName}</b>: ${p.data} complaints</div>`
+//           ).join("");
+//           return `<strong>${date}</strong><br/>${lines}`;
+//         }
+//       },
+//       legend: {
+//         type: 'scroll',
+//         top: 55,
+//         data: data.map(p => p.product),
+//         textStyle: { fontSize: 12 }
+//       },
+//       grid: {
+//         top: 90,
+//         left: 60,
+//         right: 30,
+//         bottom: 60
+//       },
+//       xAxis: {
+//         type: 'category',
+//         data: allMonths,
+//         name: 'Month',
+//         axisLabel: { rotate: 45 }
+//       },
+//       yAxis: {
+//         type: 'value',
+//         name: 'Complaints',
+//         axisLabel: { formatter: '{value}' }
+//       },
+//       series
+//     };
+
+//     renderEChartCard({
+//       id: 'complaint-trend-' + (Math.random() * 1e9 | 0),
+//       title: 'Product Complaints (Time)',
+//       chartType: 'line',
+//       option
+//     });
+
+//     if (ttsEnabled) {
+//       speak('Complaint trend for each product is now displayed. You can spot spikes over months.');
+//     }
+
+//   } catch (err) {
+//     console.error("Complaint Trend Error:", err);
+//     const card = document.createElement("div");
+//     card.className = "chart-card";
+//     card.innerHTML = `
+//       <div class="chart-header"><div class="chart-title">Complaint Trend Error</div></div>
+//       <div class="chart-content"><div class="chart-placeholder">
+//         Could not load complaint trend (${err.message})
+//       </div></div>`;
+//     chartsContainer.prepend(card);
+//   }
+// }
+
+// document.addEventListener('DOMContentLoaded', loadComplaintTrendChart);
+
+function unwrapEmailTimelinePayload(raw) {
+  if (Array.isArray(raw) && raw[0]?.timestamp && raw[0]?.description) return raw;
+  if (raw?.data) return raw.data;
+  throw new Error("Unexpected payload format for email timeline");
+}
+
+async function loadEmailTimelineChart() {
+  try {
+    const res = await fetch('http://localhost:5678/webhook/api/water_fall');
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const raw = await res.json();
+    const data = unwrapEmailTimelinePayload(raw);  // [{timestamp, description}, ...]
+
+    const timestamps = data.map(d => d.timestamp);
+    const descriptions = data.map(d => d.description);
+
+    const option = {
+      tooltip: {
+        trigger: 'axis',
+        axisPointer: { type: 'shadow' },
+        formatter: function (params) {
+          const index = params[0].dataIndex;
+          return `<b>${timestamps[index]}</b><br/>${descriptions[index]}`;
+        }
+      },
+      grid: {
+        left: '1%',
+        right: '1%',
+        bottom: '1%',
+        containLabel: true
+      },
+      yAxis: {
+  type: 'value',
+  min: 0,
+  max: 2,        // Extra headroom for labels above
+  show: false
+}
+,
+xAxis: {
+  type: 'category',
+  data: timestamps,
+  axisLabel: {
+    rotate: 45,
+    fontSize: 11
+  }
+}
+,
+     series: [
+  {
+    type: 'scatter',
+    data: data.map((d, i) => [d.timestamp, 0]), // x: timestamp, y: 0
+    label: {
+      show: true,
+      formatter: function (params) {
+        return descriptions[params.dataIndex];
+      },
+      rotate: 90,         // Vertical text
+      position: 'top',    // ⬆️ Above the dot
+      fontSize: 10,
+      color: '#000',
+      align: 'top',
+      verticalAlign: 'bottom'
+    },
+    symbolSize: 10,
+    itemStyle: {
+      color: '#2a9d8f'
+    }
+  }
+]
+
+
+    };
+
+    renderEChartCard({
+      id: 'email-timeline-' + (Math.random() * 1e9 | 0),
+      title: 'Email Event Timeline',
+      chartType: 'line',
+      option
+    });
+
+    if (ttsEnabled) speak('Email timeline chart is ready.');
+  } catch (err) {
+    console.error('Email Timeline Chart Error:', err);
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Timeline Chart Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load email timeline chart (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+
+function unwrapResponseBucketPayload(raw) {
+  if (Array.isArray(raw) && raw[0]?.bucket) return raw;
+  if (raw?.data) return raw.data;
+  if (Array.isArray(raw) && raw[0]?.response?.body?.[0]) return raw[0].response.body;
+  throw new Error("Unexpected bucket payload");
+}
+async function loadResponseTimeBucketChart() {
+  try {
+    const res = await fetch("http://localhost:5678/webhook/api/radar-urgency");
+    if (!res.ok) throw new Error(`API ${res.status}`);
+    const raw = await res.json();
+    const data = unwrapResponseBucketPayload(raw);  // [{bucket,value}]
+
+    const colors = [
+      "#22c55e", "#3b82f6", "#6366f1",
+      "#a855f7", "#f59e0b", "#ef4444", "#dc2626"
+    ];
+
+    const sortedData = data.sort((a, b) => {
+      const aNum = parseInt(a.bucket.replace(/\D/g, '')) || 0;
+      const bNum = parseInt(b.bucket.replace(/\D/g, '')) || 0;
+      return aNum - bNum;
+    });
+
+    const option = {
+      
+      tooltip: {
+        trigger: "item",
+        backgroundColor: "rgba(0,0,0,0.75)",
+        textStyle: { color: "#fff", fontSize: 12 },
+        formatter: ({ data }) =>
+          `<b>${data.bucket}</b><br/>${data.value} chains`
+      },
+      grid: {
+        top: 90,
+        bottom: 60,
+        left: 60,
+        right: 20
+      },
+      xAxis: {
+  type: "category",
+  name: "Span Duration",
+  nameLocation: "middle",
+  nameGap: 50,
+  axisLabel: {
+    rotate: 40,
+    fontSize: 13,
+    formatter: val => val,
+    color: "#334155",
+    interval: 0 // <--- Forces all labels to display
+  },
+  data: sortedData.map(d => d.bucket)
+},
+      yAxis: {
+        type: "value",
+        name: "Chains",
+        axisLabel: {
+          fontSize: 12,
+          color: "#334155"
+        }
+      },
+      series: [{
+        type: "bar",
+        barWidth: "50%",
+        data: sortedData.map((d, i) => ({
+          value: d.value,
+          bucket: d.bucket,
+          itemStyle: {
+            color: colors[i % colors.length],
+            shadowBlur: 10,
+            shadowColor: "rgba(0, 0, 0, 0.15)"
+          },
+          label: {
+            show: true,
+            position: "top",
+            formatter: "{c}",
+            fontWeight: "bold",
+            color: "#1e293b",
+            fontSize: 12
+          }
+        }))
+      }]
+    };
+
+    renderEChartCard({
+      id: 'bucket-' + (Math.random() * 1e9 | 0),
+      title: 'Span Time Of Email Chain',
+      chartType: 'bar',
+      option
+    });
+
+    if (ttsEnabled) {
+      speak("Clear response time buckets loaded.");
+    }
+
+  } catch (err) {
+    console.error("Bucket Chart Error:", err);
+    const card = document.createElement("div");
+    card.className = "chart-card";
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Bucket Chart Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load response time buckets (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+
+async function loadMarketingFunnelChart() {
+  try {
+    // Static fallback data
+    const funnelData = [
+      { value: 1000, name: 'Emails Sent' },
+      { value: 700, name: 'Emails Opened' },
+      { value: 250, name: 'Contacted Back' },
+      { value: 90, name: 'Orders Placed' }
+    ];
+
+    // Total for normalization (if needed)
+    const totalEmailsSent = funnelData[0]?.value || 1000;
+
+    const option = {
+      tooltip: {
+        trigger: 'item',
+        formatter: '{b}: {c}'
+      },
+      series: [
+        {
+          name: 'Marketing Email Flow',
+          type: 'funnel',
+          left: '10%',
+          top: 60,
+          bottom: 60,
+          width: '80%',
+          min: 0,
+          max: totalEmailsSent,
+          sort: 'descending',
+          label: {
+            show: true,
+            position: 'inside',
+            formatter: '{b}\n{c}'
+          },
+          itemStyle: {
+            borderColor: '#fff',
+            borderWidth: 1
+          },
+          data: funnelData
+        }
       ]
-    }))
-  };
-  return {
-    tooltip:{ formatter:'{b}: {c}' },
-    series:[{
-      type:'sunburst',
-      data:[root],
-      radius:['15%','90%'],
-      sort:null,   // keep input order
-      label:{ rotate:'radial' }
-    }]
-  };
-})();
+    };
 
-/* ---------- 6 ─ Gauge (On‑time Report Delivery Rate) ---------- */
-const kpiGaugeOption = {
-  tooltip:{ formatter:'{a}<br/>{c}% on‑time' },
-  series:[{
-    name:'Report SLA', type:'gauge', radius:'85%',
-    detail:{ formatter:'{value}%', fontSize:20 },
-    axisLine:{ lineStyle:{ width:15 } },
-    data:[{ value:92, name:'On‑time' }]
-  }]
-};
+    // Safely attempt chart rendering
+    try {
+      renderEChartCard({
+        id: 'marketing-funnel',
+        title: 'Marketing Email Flow',
+        chartType: 'funnel',
+        option
+      });
+    } catch (renderErr) {
+      throw new Error('Chart rendering failed: ' + renderErr.message);
+    }
 
-/* ---------- Render on page load ---------- */
-function renderDefaultAdvancedCharts(){
-  renderEChartCard({ id:'def-cal-heatmap', title:'Daily Patient Volume (2025)', option:calendarHeatmapOption, chartType:'calendarHeatmap' });
-  renderEChartCard({ id:'def-word-cloud',   title:'Most Requested Tests',        option:wordCloudOption,       chartType:'wordCloud'        });
-  renderEChartCard({ id:'def-heatmap',      title:'Machine Utilisation (%)',     option:utilisationHeatmapOption, chartType:'heatmap'       });
-  renderEChartCard({
-  id:'def-tat-rose',
-  title:'Average Test Duration',
-  option:avgTATRoseOption,
-  chartType:'rosePie'
+    // Optional TTS
+    if (typeof ttsEnabled !== 'undefined' && ttsEnabled) {
+      speak('Marketing funnel chart loaded.');
+    }
+
+  } catch (err) {
+    console.error('Funnel chart error:', err);
+
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Funnel Chart Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load marketing funnel chart: ${err.message}
+      </div></div>`;
+
+    if (typeof chartsContainer !== 'undefined' && chartsContainer?.prepend) {
+      chartsContainer.prepend(card);
+    } else {
+      document.body.appendChild(card);
+    }
+  }
+}
+
+
+async function loadEmailChainResponseTimeline() {
+  try {
+    const chains = [
+      {
+        id: 'Chain A',
+        start: 0,
+        response: 50,
+        emails: [0, 5, 12, 20, 35, 50]
+      },
+      {
+        id: 'Chain B',
+        start: 2,
+        response: 45,
+        emails: [2, 10, 25, 40, 47]
+      },
+      {
+        id: 'Chain C',
+        start: 5,
+        response: 35,
+        emails: [5, 7, 10, 15, 30, 40]
+      },
+      {
+        id: 'Chain D',
+        start: 3,
+        response: 38,
+        emails: [3, 14, 22, 28, 41]
+      },
+      {
+        id: 'Chain E',
+        start: 6,
+        response: 49,
+        emails: [6, 16, 26, 36, 49]
+      }
+    ];
+
+    const yAxis = chains.map(c => c.id);
+
+    const bars = chains.map((c, i) => ({
+      name: c.id,
+      value: [c.start, c.response - c.start],
+      itemStyle: { color: '#3b82f6' }
+    }));
+
+    const scatterPoints = chains.flatMap(c =>
+      c.emails.map(t => ({
+        name: 'Email',
+        value: [t, c.id],
+        symbolSize: 10,
+        itemStyle: { color: '#ef4444' }
+      }))
+    );
+
+    const option = {
+      tooltip: {
+        trigger: 'item',
+        formatter: p => {
+          if (p.seriesType === 'bar') {
+            return `${p.name}<br>🕓 Start: Day ${p.value[0]}<br>✅ Response: Day ${p.value[0] + p.value[1]}<br>⏱ Duration: ${p.value[1]} days`;
+          } else {
+            return `✉️ Email at Day ${p.value[0]} in ${p.value[1]}`;
+          }
+        }
+      },
+      grid: {
+        left: 120,
+        right: 50,
+        top: 80,
+        bottom: 40
+      },
+      xAxis: {
+        type: 'value',
+        name: 'Day',
+        min: 0,
+        max: 60
+      },
+      yAxis: {
+        type: 'category',
+        data: yAxis,
+        name: 'Email Chains',
+        splitLine: {
+          show: true,
+          lineStyle: {
+            type: 'dashed',
+            color: '#ccc'
+          }
+        }
+      },
+      series: [
+        {
+          type: 'bar',
+          name: 'Chain Duration',
+          stack: 'chains',
+          barHeight: 20,
+          label: {
+            show: true,
+            position: 'right',
+            formatter: p => `${p.value[1]}d`
+          },
+          data: bars
+        },
+        {
+          type: 'scatter',
+          name: 'Email Points',
+          data: scatterPoints,
+          symbol: 'circle',
+          symbolSize: 10
+        }
+      ]
+    };
+
+    renderEChartCard({
+      id: 'chain-timeline-' + (Math.random() * 1e9 | 0),
+      title: 'Email Chain Response Timelines',
+      chartType: 'timeline',
+      option
+    });
+
+    if (ttsEnabled) {
+      speak('Email chain timeline chart loaded.');
+    }
+
+  } catch (err) {
+    console.error('Email chain timeline error:', err);
+    const card = document.createElement('div');
+    card.className = 'chart-card';
+    card.innerHTML = `
+      <div class="chart-header"><div class="chart-title">Timeline Chart Error</div></div>
+      <div class="chart-content"><div class="chart-placeholder">
+        Could not load email timeline chart (${err.message})
+      </div></div>`;
+    chartsContainer.prepend(card);
+  }
+}
+
+
+
+
+
+
+
+
+
+
+
+
+/* kick-off on page load */
+
+document.addEventListener('DOMContentLoaded', async () => {
+  await loadTicketFunnelCard();                  
+  await loadCategorySentimentSunburstCard();    
+  await loadSLAGaugeCard();                   
+  await loadProductSentimentBarChart();       
+  await loadHourWeekdayHeatmapCard();
+  await loadEmailChainResponseTimeline();  
+  await loadMarketingFunnelChart(); 
+  await loadEmailTimelineChart();              
+  await loadResponseTimeBucketChart();          
+  await loadCategoryRoseBarCard();               
+  await loadKeywordWordCloudCard();              
+  await loadProductBarRaceCard();                
 });
 
 
-  renderEChartCard({ id:'def-sunburst',     title:'Machinery Status Overview',   option:machineStatusSunburstOption, chartType:'sunburst'   });
-  renderEChartCard({ id:'def-kpi-gauge',    title:'On‑time Report Delivery',     option:kpiGaugeOption,        chartType:'gauge'            });
-}
-document.addEventListener('DOMContentLoaded', renderDefaultAdvancedCharts);
-  /* Ask for mic permission the moment user presses the mic button */
- const VoiceSystem = (() => {
-    let synth;
-    let recognition;
-    let isListening = false;
-    
-    // Initialize voice system
-    function init() {
-      synth = window.speechSynthesis;
-      
-      // Initialize speech recognition if available
-      if ('SpeechRecognition' in window || 'webkitSpeechRecognition' in window) {
-        recognition = new (window.SpeechRecognition || window.webkitSpeechRecognition)();
-        recognition.continuous = false;
-        recognition.lang = 'en-US';
-        recognition.interimResults = false;
-        recognition.maxAlternatives = 1;
-        
-        recognition.onresult = (event) => {
-          const transcript = event.results[0][0].transcript;
-          processVoiceCommand(transcript);
-          stopListening();
-        };
-        
-        recognition.onerror = (event) => {
-          console.error('Speech recognition error', event.error);
-          speak("Sorry, I didn't catch that. Could you repeat?", 'error');
-          stopListening();
-        };
-      }
-    }
-    
-    // Speak function
-    function speak(text, emotion = 'neutral') {
-      if (!synth) return;
-      
-      // Cancel any ongoing speech
-      synth.cancel();
-      
-      const utterance = new SpeechSynthesisUtterance(text);
-      
-      // Voice modulation profiles
-      const profiles = {
-        neutral: { rate: 1.1, pitch: 1.0 },
-        excited: { rate: 1.3, pitch: 1.3 },
-        warning: { rate: 0.9, pitch: 0.8 },
-        error: { rate: 1.0, pitch: 0.7 }
-      };
-      
-      const config = profiles[emotion] || profiles.neutral;
-      utterance.rate = config.rate;
-      utterance.pitch = config.pitch;
-      
-      // Select best available voice
-      const voices = synth.getVoices();
-      utterance.voice = voices.find(v => v.name.includes('Google')) || 
-                        voices.find(v => v.lang.includes('en-US'));
-      
-      synth.speak(utterance);
-    }
-    
-    // Start listening
-    function startListening() {
-      if (!recognition || isListening) return;
-      
-      try {
-        recognition.start();
-        isListening = true;
-        updateVoiceButtonState(true);
-        speak("Listening... What would you like to analyze?", 'neutral');
-      } catch (e) {
-        console.error('Speech recognition failed:', e);
-        updateVoiceButtonState(false);
-      }
-    }
-    
-    // Stop listening
-    function stopListening() {
-      if (!recognition || !isListening) return;
-      
-      try {
-        recognition.stop();
-        isListening = false;
-        updateVoiceButtonState(false);
-      } catch (e) {
-        console.error('Error stopping recognition:', e);
-      }
-    }
-    
-    // Toggle listening state
-    function toggleListening() {
-      if (isListening) {
-        stopListening();
-      } else {
-        startListening();
-      }
-    }
-    
-    // Update button UI
-    function updateVoiceButtonState(listening) {
-      const voiceBtn = document.getElementById('voiceAssistantBtn');
-      if (!voiceBtn) return;
-      
-      voiceBtn.innerHTML = listening 
-        ? '<i class="fas fa-microphone-slash"></i>' 
-        : '<i class="fas fa-microphone"></i>';
-      
-      voiceBtn.classList.toggle('listening', listening);
-    }
-    
-    // Process voice commands
-    function processVoiceCommand(transcript) {
-      speak(`Processing: ${transcript}`);
-      
-      // Command mapping
-      const commands = [
-        { pattern: /(generate|create|show)/i, action: () => {
-          promptInput.value = transcript.replace(/(generate|create|show)/i, '');
-          generateBtn.click();
-        }},
-        { pattern: /(clear|reset)/i, action: () => clearDashboard.click() },
-        { pattern: /(theme|mode|appearance)/i, action: () => themeToggle.click() },
-        { pattern: /(recommendation|suggestion)/i, action: () => {
-          const recs = document.querySelectorAll('.recommendation');
-          recs[Math.floor(Math.random() * recs.length)].click();
-        }}
-      ];
-      
-      // Find and execute matching command
-      const match = commands.find(cmd => cmd.pattern.test(transcript));
-      if (match) {
-        match.action();
-        return;
-      }
-      
-      // Default action
-      promptInput.value = transcript;
-      generateBtn.click();
-    }
-    
-    // Public API
-    return {
-      init,
-      speak,
-      toggleListening
-    };
-  })();
-
-  // Initialize on DOMContentLoaded
-  document.addEventListener('DOMContentLoaded', () => {
-    // Initialize voice system
-    VoiceSystem.init();
-    
-    // Add voice button to header
-    const headerControls = document.querySelector('.header-controls');
-    if (headerControls) {
-      const voiceBtn = document.createElement('button');
-      voiceBtn.className = 'header-btn';
-      voiceBtn.id = 'voiceAssistantBtn';
-      voiceBtn.innerHTML = '<i class="fas fa-microphone"></i>';
-      voiceBtn.addEventListener('click', () => VoiceSystem.toggleListening());
-      headerControls.prepend(voiceBtn);
-    }
-    
-    // Play welcome message after slight delay
-    setTimeout(() => {
-      const welcomeMessages = [
-        "Welcome to DeepDrishti Diagnostic Dashboard",
-        "Hello Manoj, ready to analyze today's data?",
-        "Good day! How can I assist with diagnostics today?"
-      ];
-      VoiceSystem.speak(
-        welcomeMessages[Math.floor(Math.random() * welcomeMessages.length)]
-      );
-    }, 1500);
-  });
-
-  // Add voice feedback to chart generation
-  const originalBtnClick = generateBtn.onclick;
-  generateBtn.onclick = async function() {
-    VoiceSystem.speak("Processing your request...");
-    await originalBtnClick.call(this);
-  };
   </script>
 </body>
 </html>
